@@ -1,0 +1,326 @@
+/* ================================================= */
+/* 0. Global & Base Styles */
+/* ================================================= */
+
+:root {
+    /* Define a color palette based on your design */
+    --primary-purple: #9d8189;
+    --light-pink: #f4e4e9;
+    --text-color: #000001;
+    --subtle-text: #8d8a97;
+    --white: #ffffff;
+    --shadow-light: rgba(0, 0, 0, 0.05);
+    --story-ring: 4px;
+    --story-size: 80px;
+
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif; /* Use a friendly, readable font */
+}
+
+body {
+    /* Use the provided dasboardWallpaper.jpg as a full-bleed background for the dashboard */
+    background-color: var(--light-pink);
+    background-image: url('dasboardWallpaperjpg.jpg');
+    background-size: cover; /* scale to cover the viewport */
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: fixed; 
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: stretch; /* allow child to expand vertically */
+}
+
+.app-wrapper {
+    width: 100%;
+    max-width: none; /* allow full width */
+    min-height: 100vh; /* fill the viewport vertically */
+    /* translucent white so the background image is visible through the app area */
+    background-color: rgba(255,255,255,0.92);
+    box-shadow: 0 0 20px var(--shadow-light);
+    position: relative; /* allow absolutely positioned logo inside */
+    border-radius: 0; /* remove rounded corners so it fills the screen */
+}
+
+.main-content {
+    padding-bottom: 70px; /* Space for the fixed footer */
+    /* Use wallpaper as a continuous background for the content area */
+    background-image: url('dasboardWallpaperjpg.jpg');
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+}
+
+/* Horizontal Rule for separation */
+hr {
+    border: none;
+    border-top: 1px solid var(--light-pink);
+    margin: 15px 0;
+}
+
+
+/* ================================================= */
+/* 1. The Story Bar */
+/* ================================================= */
+
+.stories-bar {
+    display: flex;
+    flex-wrap: nowrap; /* keep a single line */
+    align-items: center;
+    border-radius: 30px;
+    justify-content: space-between; /* distribute items across the available width */
+    padding: 14px 18px;
+    gap: 24px; /* larger gap between stories */
+    overflow-x: auto; /* Enables horizontal scrolling on small screens */
+    /* white-space removed because flex handles layout */
+    padding-top: 84px; /* leave room for the logo so items don't overlap */
+    background: transparent;
+    /* Hide the scrollbar, optional */
+    scrollbar-width: none; /* Firefox */
+}
+
+.stories-bar::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+}
+
+.story-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    /* allow items to grow and share available space so they expand to fit the line */
+    flex: 1 1 0;
+    min-width: 80px; /* ensure avatars keep a reasonable size */
+    max-width: 140px; /* avoid items becoming too wide on very large screens */
+}
+
+.story-item::before {
+    /* Disabled — avatars are provided by the .story-avatar element now */
+    display: none;
+}
+
+.my-story::before {
+    display: none;
+}
+
+.story-item span {
+    font-size: 1.05rem;
+    color: #000000;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border-radius: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    min-width: 70px;
+    cursor: pointer; 
+    transition: transform 0.2s ease-in-out;
+}
+/* 2. Add the Hover Effect */
+.story-item:hover {
+    /* Scale the item up by 5% when hovered */
+    transform: scale(1.05);
+    /* Optional: Slightly lift the item */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+}
+
+
+.stories-section {
+    padding: 10px 12px 6px 12px;
+}
+
+.story-avatar {
+    width: var(--story-size);
+    height: var(--story-size);
+    position: relative;
+    border-radius: 50%;
+    overflow: hidden;
+    display: inline-block;
+    /* Gradient border: use a transparent border with a gradient shown via a second background */
+    background: linear-gradient(var(--white), var(--white)) padding-box,
+                linear-gradient(316deg, #523a78 0%, #ee696b 74%) border-box;
+    border: 2px solid transparent; /* border thickness controls ring size */
+    margin-bottom: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    transition: transform 180ms ease, box-shadow 180ms ease, border 180ms ease;
+}
+.story-avatar img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+.story-avatar::after{
+    content: "";
+  position: absolute;
+  inset: 0; /* top:0; right:0; bottom:0; left:0; */
+  border-radius: 50%;
+  pointer-events: none; /* so clicks pass through to underlying elements if needed */
+
+  /* The gradient for the ring */
+  background: linear-gradient(316deg, #523a78 0%, #ee696b 74%);
+
+  /* mask out the inner circle so only the ring remains visible */
+  /* uses radial-gradient so the inner area becomes transparent */
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - var(--story-ring)), black calc(100% - var(--story-ring)));
+  mask: radial-gradient(farthest-side, transparent calc(100% - var(--story-ring)), black calc(100% - var(--story-ring)));
+}
+
+.story-avatar:hover {
+    transform: scale(2.00);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+    border: 6px solid transparent; /* visually increase ring thickness on hover */
+}
+
+/* ================================================= */
+/* 2. The Posting/Action Bar */
+/* ================================================= */
+
+.post-actions-bar {
+    padding: 15px;
+}
+
+.story-item.friend-story {
+    border-radius: 30px;
+}
+
+.greeting {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--text-color);
+    margin-bottom: 10px;
+}
+
+.post-input-area {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.action-button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    color: var(--white);
+    /* Gradient like your login button */
+    background: linear-gradient(to right, #9d8189, #b981b0); 
+}
+
+.add-post-btn {
+    text-align: left;
+    background: var(--light-pink);
+    color: var(--subtle-text);
+    box-shadow: 0 2px 4px var(--shadow-light);
+}
+
+.quick-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 5px;
+}
+
+.small-btn {
+    flex-grow: 1;
+    padding: 8px 5px;
+    font-size: 0.8rem;
+    border-radius: 15px;
+    background: var(--primary-purple);
+}
+
+.small-btn:hover {
+    opacity: 0.9;
+}
+
+
+/* ================================================= */
+/* 3. The Timeline/Feed */
+/* ================================================= */
+
+.timeline-feed {
+    padding: 0 10px;
+}
+
+.feed-post {
+    /* Sit on the main wallpaper and use a translucent overlay so boxes appear continuous */
+    background: rgba(255,255,255,0.88);
+    border-radius: 0; /* remove rounded corners so posts visually connect */
+    margin: 0; /* remove gaps between posts */
+    padding: 18px 15px;
+    border: none;
+}
+
+.post-header {
+    color: var(--subtle-text);
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+}
+
+.media-placeholder {
+    width: 100%;
+    height: 300px; /* Placeholder size for the media (images/circles in your sketch) */
+    /* Let the main-content wallpaper show through; remove pastel fill */
+    background: transparent;
+    border-radius: 0; /* Make placeholders align seamlessly with posts */
+    /* You can add more styles here to represent the "circles" if needed */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    color: var(--primary-purple);
+}
+
+.post-text {
+    font-size: 1rem;
+    color: var(--text-color);
+    line-height: 1.5;
+    padding: 5px 0;
+}
+
+
+/* ================================================= */
+/* 4. Footer */
+/* ================================================= */
+
+.app-footer {
+    position: fixed; /* Fix the footer to the bottom */
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    max-width: none; /* span full viewport width */
+    background-color: var(--primary-purple);
+    color: var(--white);
+    text-align: center;
+    padding: 8px 0;
+    font-size: 0.8rem;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Dashboard-specific overrides: logo placement and horizontal stories */
+.logo {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    width: 66px;
+    height: 66px;
+    border-radius: 50%;
+    object-fit: cover;
+    z-index: 20;
+    box-shadow: 10px 10px 10px rgba(0,0,0,0.08);
+}
+
+/* Fallback: if the logo is placed outside .app-wrapper, use fixed positioning */
+.logo.fixed-top-left {
+    position: fixed;
+    top: 12px;
+    left: 12px;
+}
