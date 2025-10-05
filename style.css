@@ -1,0 +1,295 @@
+
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+
+}
+
+/* Page layout */
+body{
+    background-image: url("bg.png");
+    
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+    min-height: 100vh;
+    padding: 40px 20px;
+}
+
+
+.index-page, .site-page {
+    min-height: 100vh;
+    display: flex; 
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding-top: 28px;}
+
+
+
+.container{
+    width: 85%;
+    max-width: 720px; 
+    min-height: 60vh; 
+    padding: 48px;
+    background: linear-gradient(315deg, #ffd9de 0%, #eeb9c0 74%);
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(15, 40, 60, 0.12);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 16px;
+}
+
+.signup-container {
+    width: 90%;
+    max-width: 480px;
+    padding: 30px;
+    background-color: aliceblue;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    margin: 0 auto;
+}
+
+h1, h2 {
+    color: #333;
+    margin-bottom: 18px;
+    font-weight: 300; 
+}
+
+
+.form-group {
+    text-align: left;
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: #555;
+    text-transform: lowercase; 
+
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1em;
+    transition: border-color 0.3s, box-shadow 0.15s;
+
+}
+
+.form-group input:focus {
+    border-color: #007bff; 
+    outline: none;
+
+    box-shadow: 0 0 0 3px rgba(0,123,255,0.08);
+
+}
+
+
+.button, 
+button[type="submit"] {
+    display: inline-block;
+    width: 100%;
+    padding: 12px;
+    margin: 15px 0 10px 0;
+
+    text-decoration: none; 
+
+    border-radius: 6px;
+
+    font-size: 1.05em;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: background-color 0.25s, transform 0.08s;
+
+    border: none; /* Remove default button border */
+
+    text-align: center;
+
+}
+
+/* Primary Button (e.g., LOG IN / SIGNUP) */
+
+.primary-button {
+
+    background-color: #9e22cb; 
+
+    color: rgb(122, 24, 24);
+
+}
+
+.primary-button:hover {
+    background-color: #77148d;
+
+    transform: translateY(-1px);
+
+}
+
+
+
+.secondary-button {
+    background-color: #1466b8; 
+
+    color: #333;
+
+    border: 1px solid #e76666;
+
+}
+
+.secondary-button:hover {
+    background-color: #1e64ab;
+
+    transform: translateY(-1px);
+
+}
+
+/* Buttons wrapper used on index.html */
+
+.buttons-for-login-signup {
+    display: flex; /* Arranges the buttons side-by-side */
+
+    gap: 12px; /* Space between buttons */
+
+    margin-top: 24px;
+
+    margin-bottom: 24px;
+
+    justify-content: center;
+
+    width: 100%;
+
+}
+
+/* On the homepage, make the buttons split the width */
+
+.buttons-for-login-signup a {
+    display: inline-block;
+
+    width: calc(50% - 6px); /* Two buttons with a gap */
+
+    margin: 0;
+
+    padding: 12px 10px;
+
+    border-radius: 8px;
+
+    text-decoration: none;
+
+    font-weight: 600;
+
+    text-align: center;
+
+}
+
+.login-button {
+
+    background-color: #b5038e;
+    background: linear-gradient(319deg, #6a5acd 0%, #c54b8c 37%, #b284be 100%);
+
+
+    color: #333333;
+
+}
+
+.login-button:hover { background-color:#8a0b64 }
+
+.signup-button {
+
+    background-color: #e9ecef;
+    background: linear-gradient(319deg, #6a5acd 0%, #c54b8c 37%, #b284be 100%);
+    color: #333;
+
+    border: 1px solid #ccc;
+
+}
+
+.signup-button:hover { background-color:#d6d9dc }
+
+
+/* Submit button class used in forms */
+.submit-button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 12px;
+    border-radius: 6px;
+    background: linear-gradient(319deg, #6a5acd 0%, #c54b8c 37%, #b284be 100%);
+    color: #322c2c;
+    font-weight: 600;
+    border: brown;
+    cursor: pointer;
+}
+
+.submit-button:hover { background-color: #0056b3 }
+
+
+
+
+.footer-note, footer#foot-note, footer#page-footer, p.footer-note {
+
+    margin-top: 18px;
+
+    font-size: 1em;
+    font-family: cursive;
+    color: #130404;
+
+    text-transform: lowercase; /* Matches the sketch style */
+
+    text-align: center;
+
+}
+
+footer#foot-note, footer#page-footer { width:100%; margin-top:18px }
+
+/* Circular logo positioned top-left on index page */
+.logo{
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    width: 82px;
+    height: 82px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 3px 2px 6px rgba(0,0,0,0.12);
+    background: rgb(214, 22, 153);
+    padding: 6px;
+}
+
+/* pin the homepage footer to bottom when on index page */
+.index-page footer#foot-note, .site-page footer, .site-page p.footer-note {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    padding: 10px 0;
+    background: transparent; /* keep page background visible */
+}
+
+
+@media (max-width: 520px) {
+    .container{
+        padding: 22px;
+        min-height: 50vh;
+    }
+    .logo{ width:56px; height:56px; top:8px; left:8px }
+}
+
+.error {
+    border-color: red !important; /* Visual cue for error */
+}
+
+
