@@ -1,3 +1,5 @@
+
+
 console.log('script.js loaded');
 
 // Helper: escape HTML for safe insertion
@@ -70,7 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             localStorage.setItem('loggedInUser', JSON.stringify(matched));
             alert(`welcome back, ${matched.name}! you have successfully logged in!`);
-            window.location.href = 'index.html';
+            window.location.href = 'dashboard.html';
         });
     }
 
@@ -80,22 +82,16 @@ document.addEventListener('DOMContentLoaded', () => {
         let loggedInUser = null;
         try { loggedInUser = JSON.parse(localStorage.getItem('loggedInUser')) || null; } catch (err) { loggedInUser = null; }
 
-        if (loggedInUser && container) {
-            container.innerHTML = `\
-                <h1>Hello, ${escapeHtml(loggedInUser.name)} 👋</h1>\
-                <p>Welcome back to <strong>Eunoia</strong> — share your thoughts beautifully.</p>\
-                <div style="margin-top:18px;">\
-                    <button id="logoutBtn" class="submit-button">Logout</button>\
-                </div>`;
-
-            const logoutBtn = document.querySelector('#logoutBtn');
-            if (logoutBtn) {
-                logoutBtn.addEventListener('click', () => {
-                    localStorage.removeItem('loggedInUser');
-                    window.location.href = 'login.html';
-                });
-            }
+        if (loggedInUser) {
+           console.log(`user is logged in: ${loggedInUser}`);
+        }
+        else{
+            console.log('no user is logged in');
         }
     }
 });
+       
+    
+    
+
 
