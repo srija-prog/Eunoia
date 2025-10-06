@@ -97,6 +97,11 @@ hr {
     flex: 1 1 0;
     min-width: 80px; /* ensure avatars keep a reasonable size */
     max-width: 140px; /* avoid items becoming too wide on very large screens */
+    span{
+        font-family: cursive;
+        color: #ffefff;
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3)
+    }
 }
 
 .story-item::before {
@@ -110,7 +115,7 @@ hr {
 
 .story-item span {
     font-size: 1.05rem;
-    color: #000000;
+    color: #841a52;
     overflow: hidden;
     text-overflow: ellipsis;
     border-radius: 50px;
@@ -197,7 +202,8 @@ hr {
     font-size: 1.8rem;
     font-family: cursive;
     font-weight: bold;
-   
+   color: #891b70; 
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3); 
     margin-bottom: 10px;
 }
 
