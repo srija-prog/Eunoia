@@ -7,6 +7,7 @@ A minimalist social media web app — For people to interact with their friends,
 - 👋 Personalized homepage greeting
 - 🚪 Logout system
 - ⚡ LocalStorage-based session handling
+- the backend has been createad, but is not yet integrated with frontend
 
 ### Next Steps
 - Add post creation and user feeds
