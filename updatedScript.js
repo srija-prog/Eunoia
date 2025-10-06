@@ -1,5 +1,3 @@
-
-
 (function() { //starts the iife
     let myStories = [];
     //empty array for stories
@@ -60,7 +58,7 @@
             // basic visible backdrop and centering; you can override via CSS
             modal.style.position = 'fixed';
             modal.style.inset = '0';
-            modal.style.background = 'rgba(0,0,0,0.6)';
+            modal.style.background = 'rgba(240, 160, 234, 0.84)';
             modal.style.display = 'none';
             modal.style.justifyContent = 'center';
             modal.style.alignItems = 'center';
@@ -71,8 +69,9 @@
             // half window size
             content.style.width = '50vw';
             content.style.height = '50vh';
-            content.style.background = '#000';
-            content.style.borderRadius = '12px';
+            content.style.backgroundImage = "url('forSmallScreen.jpg')";
+            content.style.borderRadius = '22px';
+            content.style.border = '10px, solid , pink';
             content.style.position = 'relative';
             content.style.display = 'flex';
             content.style.justifyContent = 'center';
@@ -80,8 +79,10 @@
             //centers the image inside the frame
             const img = document.createElement('img');
             img.className = 'story-viewer-image';
-            img.style.maxWidth = '100%';
-            img.style.maxHeight = '100%';
+            img.style.maxWidth = '90%';
+            img.style.maxHeight = '90%';
+            img.style.borderRadius = '12px';
+            img.style.boxShadow = '12px'
             //here is the actual story image
             const closeBtn = document.createElement('button');
             closeBtn.className = 'story-viewer-close';
@@ -90,11 +91,12 @@
             //the close button
             // place at top-right of the frame
             closeBtn.style.position = 'absolute';
-            closeBtn.style.top = '8px';
-            closeBtn.style.right = '12px';
-            closeBtn.style.background = 'transparent';
-            closeBtn.style.border = 'none';
-            closeBtn.style.color = '#fff';
+            closeBtn.style.top = '10px';
+            closeBtn.style.right = '10px';
+            closeBtn.style.background = 'solid #d614c9ff';
+            closeBtn.style.border = '15px, solid, #d614c9ff';
+            closeBtn.style.borderRadius = '12px';
+            closeBtn.style.color = '#000000ff';
             closeBtn.style.fontSize = '24px';
             closeBtn.style.cursor = 'pointer';
             closeBtn.addEventListener('click', () => { modal.classList.remove('open'); modal.style.display = 'none'; });
@@ -108,9 +110,10 @@
             nextBtn.style.position = 'absolute';
             nextBtn.style.bottom = '10px';
             nextBtn.style.right = '12px';
-            nextBtn.style.background = 'rgba(255,255,255,0.15)';
-            nextBtn.style.color = '#fff';
-            nextBtn.style.border = '1px solid rgba(255,255,255,0.4)';
+            nextBtn.style.background = 'rgba(224, 95, 229, 0.86)';
+            nextBtn.style.color = '#100b0bff';
+            nextBtn.style.border = '15px solid rgba(240, 10, 198, 0.4)';
+            nextBtn.style.borderRadius= '12px';
             nextBtn.style.borderRadius = '8px';
             nextBtn.style.padding = '6px 10px';
             nextBtn.style.cursor = 'pointer';
