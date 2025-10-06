@@ -1,97 +1,197 @@
 
 
-console.log('script.js loaded');
+(function() { //starts the iife
+    let myStories = [];
+    //empty array for stories
+    try { myStories = JSON.parse(localStorage.getItem('myStories') || '[]') || []; } catch (_) { myStories = []; }
+    //try to get saved stories from localStorage
+    //if none, use empty array
 
-// Helper: escape HTML for safe insertion
-function escapeHtml(str) {
-    if (!str) return '';
-    return String(str)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
-}
+    const myStory = document.querySelector('.story-item.my-story');
+    //find the my story boox
+    if (!myStory) return;
+    //if not found stop the code
 
-document.addEventListener('DOMContentLoaded', () => {
-    // SIGNUP
-    const signupForm = document.querySelector('#signup-form');
-    if (signupForm) {
-        signupForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const name = document.querySelector('#name')?.value.trim() || '';
-            const username = document.querySelector('#username')?.value.trim() || '';
-            const email = (document.querySelector('#email')?.value.trim() || '').toLowerCase();
-            const password = document.querySelector('#password')?.value || '';
+    const fileInput = myStory.querySelector('input[type="file"]') || document.getElementById('story-upload');
+    //find the hindden file input where the user uploads stories
+    const avatar = myStory.querySelector('.story-avatar img');
+    //find the default avatar image for the story box
+    const storiesBar = document.querySelector('.stories-bar');
+    //find the container that holds all the stories
 
-              if (!name || !username || !email || !password) {
-                        alert("for signing up, all the fields have to be properly filled!");
-                        return;
-                    }
+    function createStoryCircle(imgSrc) {
+        //create one story circle element
+        const newStory = document.createElement('div');
+        //makes a new story div with the previous styles
+        newStory.classList.add('story-item', 'user-story');
 
-            let users = [];
-            try { users = JSON.parse(localStorage.getItem('users')) || []; } catch (err) { users = []; }
+        const avatarDiv = document.createElement('div');
+        avatarDiv.classList.add('story-avatar');
+        //creating a container to hold the story image
+        const img = document.createElement('img');
+        img.src = imgSrc;
+        img.alt = 'My Story';
+        avatarDiv.appendChild(img);
+        //adds the story into the circle
+        const span = document.createElement('span');
+        span.textContent = 'My Story';
+        //small label under the circle
+        newStory.appendChild(avatarDiv);
+        newStory.appendChild(span);
+        //combine the circle and label into one story box
+        newStory.addEventListener('click', (e) => {
+            e.preventDefault(); //stop unwanted link behavior
+            e.stopPropagation(); // stop bubbling to parents
+            openStoryModal(myStories.indexOf(imgSrc));
+        });
+        return newStory;
+        //returns this complete story
+    }
 
-            if (users.some(u => u.email === email)) {
-                    alert('this email is already being registered, please login instead or if you want to create a new account, use a different email!');
-                    return;
-                }
+    // Ensure modal exists
+    function ensureModal() {
+        let modal = document.querySelector('.story-viewer');
+        //check if modal already exists
+        if (!modal) {
+            //create the modal if it doesn't exist
+            modal = document.createElement('div');
+            //makes the modal container
+            modal.className = 'story-viewer';
+            // basic visible backdrop and centering; you can override via CSS
+            modal.style.position = 'fixed';
+            modal.style.inset = '0';
+            modal.style.background = 'rgba(0,0,0,0.6)';
+            modal.style.display = 'none';
+            modal.style.justifyContent = 'center';
+            modal.style.alignItems = 'center';
+            modal.style.zIndex = '9999';
+            const content = document.createElement('div');
+            content.className = 'story-viewer-content';
+            //contains the actual story content
+            // half window size
+            content.style.width = '50vw';
+            content.style.height = '50vh';
+            content.style.background = '#000';
+            content.style.borderRadius = '12px';
+            content.style.position = 'relative';
+            content.style.display = 'flex';
+            content.style.justifyContent = 'center';
+            content.style.alignItems = 'center';
+            //centers the image inside the frame
+            const img = document.createElement('img');
+            img.className = 'story-viewer-image';
+            img.style.maxWidth = '100%';
+            img.style.maxHeight = '100%';
+            //here is the actual story image
+            const closeBtn = document.createElement('button');
+            closeBtn.className = 'story-viewer-close';
+            closeBtn.setAttribute('aria-label', 'Close');
+            closeBtn.textContent = '×';
+            //the close button
+            // place at top-right of the frame
+            closeBtn.style.position = 'absolute';
+            closeBtn.style.top = '8px';
+            closeBtn.style.right = '12px';
+            closeBtn.style.background = 'transparent';
+            closeBtn.style.border = 'none';
+            closeBtn.style.color = '#fff';
+            closeBtn.style.fontSize = '24px';
+            closeBtn.style.cursor = 'pointer';
+            closeBtn.addEventListener('click', () => { modal.classList.remove('open'); modal.style.display = 'none'; });
+            //clicking it closes the modal
+            // Next button (CSS overridable)
+            const nextBtn = document.createElement('button');
+            nextBtn.className = 'story-viewer-next';
+            nextBtn.textContent = 'Next';
+            //button to go to next story
+            // place at bottom-right of the frame
+            nextBtn.style.position = 'absolute';
+            nextBtn.style.bottom = '10px';
+            nextBtn.style.right = '12px';
+            nextBtn.style.background = 'rgba(255,255,255,0.15)';
+            nextBtn.style.color = '#fff';
+            nextBtn.style.border = '1px solid rgba(255,255,255,0.4)';
+            nextBtn.style.borderRadius = '8px';
+            nextBtn.style.padding = '6px 10px';
+            nextBtn.style.cursor = 'pointer';
 
-            const newUser = { name, username, email, password };
-            users.push(newUser);
-            localStorage.setItem('users', JSON.stringify(users));
+            content.appendChild(closeBtn);
+            content.appendChild(img);
+            content.appendChild(nextBtn);
+            modal.appendChild(content);
+            document.body.appendChild(modal);
+            //assembbles everything and adds to the page
+        }
+        return modal;
+        //returns so that the modal can be used
+    }
 
-            alert(`welcome, ${name}! your account has been created, thank-you for joining Eunoia!`);
-            window.location.href = 'login.html';
+    function openStoryModal(index) {
+        //opens the modal and shows the story at the given index
+        if (!myStories.length) return;
+        //no stories, do nothing
+        if (typeof index !== 'number' || index < 0 || index >= myStories.length) index = myStories.length - 1;
+        //if index is invalid, show the latest story
+        const modal = ensureModal();
+        const img = modal.querySelector('.story-viewer-image');
+        const nextBtn = modal.querySelector('.story-viewer-next');
+        modal.classList.add('open');
+        modal.style.display = 'flex';
+        //fetches the elements inside the modal and makes it visible
+        let currentIndex = index;
+
+        function render() {
+            img.src = myStories[currentIndex];
+            //shows the current story image
+        }
+        function goNext() {
+            currentIndex = (currentIndex + 1) % myStories.length;
+            render();
+            //goes to next story, loops back to start
+        }
+        render();
+        img.onclick = goNext;
+        if (nextBtn) nextBtn.onclick = goNext;
+        //clicking image or next button goes to next story
+    }
+
+    // Render saved circles on load
+    if (storiesBar && Array.isArray(myStories)) {
+        myStories.forEach((src) => {
+            storiesBar.appendChild(createStoryCircle(src));
         });
     }
 
-        //copilot stop fucking my code up, i dont need your stupid suggestions
-
-        // LOGIN
-    const loginForm = document.querySelector('#login-form');
-    if (loginForm) {
-        loginForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const email = (document.querySelector('#login-email')?.value.trim() || '').toLowerCase();
-            const password = document.querySelector('#login-password')?.value || '';
-
-              if (!email || !password) {
-                        alert("for login in your account enter the correct password and email id!")
-                        return;
+    // Upload new stories (multiple) -> save all; do not add new circles
+    if (fileInput) {
+        fileInput.addEventListener('change', (e) => {
+            const files = (e.target.files && Array.from(e.target.files)) || [];
+            if (!files.length) return;
+            let remaining = files.length;
+            files.forEach((file) => {
+                const reader = new FileReader();
+                reader.onload = function(ev) {
+                    const imgSrc = ev.target.result;
+                    myStories.push(imgSrc);
+                    remaining -= 1;
+                    if (remaining === 0) {
+                        localStorage.setItem('myStories', JSON.stringify(myStories));
                     }
-
-            let users = [];
-            try { users = JSON.parse(localStorage.getItem('users')) || []; } catch (err) { users = []; }
-
-            const matched = users.find(u => u.email === email && u.password === password);
-            if (!matched) {
-                    alert("incorrect credentials, dont try to get into someone else's account! get a life!");
-                    return;
-                }
-
-            localStorage.setItem('loggedInUser', JSON.stringify(matched));
-            alert(`welcome back, ${matched.name}! you have successfully logged in!`);
-            window.location.href = 'dashboard.html';
+                };
+                reader.readAsDataURL(file);
+            });
         });
     }
 
-    // INDEX - show welcome when logged in and provide logout
-    if (document.body.classList.contains('index-page')) {
-        const container = document.querySelector('.container');
-        let loggedInUser = null;
-        try { loggedInUser = JSON.parse(localStorage.getItem('loggedInUser')) || null; } catch (err) { loggedInUser = null; }
-
-        if (loggedInUser) {
-           console.log(`user is logged in: ${loggedInUser}`);
-        }
-        else{
-            console.log('no user is logged in');
-        }
+    // Clicking avatar opens latest story
+    if (avatar) {
+        avatar.addEventListener('click', () => {
+            if (!myStories.length) return;
+            openStoryModal(myStories.length - 1);
+        });
     }
-});
-       
-    
-    
+})();
 
-
+//i wrote these comments to explain the code better
+// now i think i am going to die
+//i'll complete the dashboard css before i die
