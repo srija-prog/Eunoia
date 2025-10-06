@@ -183,7 +183,10 @@ hr {
 /* ================================================= */
 
 .post-actions-bar {
+    border-top: none;
+    outline: none;
     padding: 15px;
+    color: var(#ab9ea3);
 }
 
 .story-item.friend-story {
@@ -191,13 +194,18 @@ hr {
 }
 
 .greeting {
-    font-size: 1.2rem;
+    font-size: 1.8rem;
+    font-family: cursive;
     font-weight: bold;
-    color: var(--text-color);
+   
     margin-bottom: 10px;
 }
 
 .post-input-area {
+    padding: 0; /* Remove any padding that might create a gap */
+    margin: 0;
+    border: none;
+    outline: none;
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -216,11 +224,17 @@ hr {
 }
 
 .add-post-btn {
-    text-align: left;
+    border: none;
+    outline: none;
+    text-align: center;
+    font-family: cursive;
     background: var(--light-pink);
-    color: var(--subtle-text);
-    box-shadow: 0 2px 4px var(--shadow-light);
+    color: rgb(242, 81, 162);
+    box-shadow: 4 3px 4px var(black);
+    
+    
 }
+
 
 .quick-actions {
     display: flex;
@@ -232,12 +246,17 @@ hr {
     flex-grow: 1;
     padding: 8px 5px;
     font-size: 0.8rem;
+    font-family: cursive;
     border-radius: 15px;
-    background: var(--primary-purple);
+    background: linear-gradient(316deg, #523a78 0%, #ee696b 74%) ;
+   
 }
 
 .small-btn:hover {
-    opacity: 0.9;
+     /* Scale the item up by 5% when hovered */
+    transform: scale(1.05);
+    /* Optional: Slightly lift the item */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
 }
 
 
@@ -251,26 +270,34 @@ hr {
 
 .feed-post {
     /* Sit on the main wallpaper and use a translucent overlay so boxes appear continuous */
-    background: rgba(255,255,255,0.88);
-    border-radius: 0; /* remove rounded corners so posts visually connect */
+    background: rgba(223, 189, 216, 0.88);
+    border-radius: 12px; /* remove rounded corners so posts visually connect */
     margin: 0; /* remove gaps between posts */
     padding: 18px 15px;
     border: none;
 }
 
 .post-header {
-    color: var(--subtle-text);
+    color:rgba(14, 13, 14, 0.88) ;
     font-size: 0.9rem;
+    
     margin-bottom: 10px;
+}
+.post-time{
+    font-family: cursive;
+}
+
+.user-info{
+    font-family: cursive;
+    font-size: 18px;
 }
 
 .media-placeholder {
     width: 100%;
-    height: 300px; /* Placeholder size for the media (images/circles in your sketch) */
-    /* Let the main-content wallpaper show through; remove pastel fill */
+    height: 300px; 
     background: transparent;
-    border-radius: 0; /* Make placeholders align seamlessly with posts */
-    /* You can add more styles here to represent the "circles" if needed */
+    border-radius: 0;
+    
     display: flex;
     justify-content: center;
     align-items: center;
@@ -280,7 +307,8 @@ hr {
 
 .post-text {
     font-size: 1rem;
-    color: var(--text-color);
+    font-family: cursive;
+    color: rgba(40, 31, 38, 0.88);
     line-height: 1.5;
     padding: 5px 0;
 }
@@ -297,12 +325,16 @@ hr {
     right: 0;
     width: 100%;
     max-width: none; /* span full viewport width */
-    background-color: var(--primary-purple);
-    color: var(--white);
+    font-family: cursive;
+    color: rgba(23, 19, 23, 0.88);
     text-align: center;
     padding: 8px 0;
     font-size: 0.8rem;
     box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+
+    .p{
+        font-family: cursive;
+    }
 }
 
 /* Dashboard-specific overrides: logo placement and horizontal stories */
@@ -323,4 +355,70 @@ hr {
     position: fixed;
     top: 12px;
     left: 12px;
+}
+
+/* ================================================= */
+/* 5. Story Viewer (customize freely)                */
+/* ================================================= */
+
+/* Backdrop container; toggle with .open */
+/* Main story viewer overlay that covers the entire screen */
+.story-viewer {
+    position: fixed; /* Fixes the overlay in place relative to the viewport */
+    inset: 0; /* top:0; right:0; bottom:0; left:0; covers the whole screen */
+    display: none; /* Hidden by default, will become flex when .open is added */
+    justify-content: center; /* Center the modal horizontally */
+    align-items: center; /* Center the modal vertically */
+    background: rgba(0,0,0,0.8); /* Thick dark background behind the story (can adjust opacity) */
+}
+
+/* Show the viewer when it has the 'open' class */
+.story-viewer.open {
+    display: flex; /* Makes the overlay visible and centers content */
+}
+
+/* The content container (the story frame) */
+.story-viewer-content {
+    width: 50vw; /* Half the width of the viewport */
+    height: 50vh; /* Half the height of the viewport */
+    background: radial-gradient(circle, rgba(63, 94, 251, 1) 0%, rgba(252, 70, 107, 1) 100%); /* Gradient inside frame */
+    border-radius: 142px; /* Rounded corners of the frame */
+    position: relative; /* Needed for absolute positioning of buttons inside */
+    display: flex; /* Use flexbox to center the image */
+    justify-content: center; /* Center the image horizontally */
+    align-items: center; /* Center the image vertically */
+    overflow: hidden; /* Crop any overflowing parts of the image */
+    border: 5px solid radial-gradient purple ; /* Optional: thick border around the frame */
+}
+
+/* The image inside the story viewer */
+.story-viewer-image {
+    max-width: 100%; /* Ensure image does not overflow horizontally */
+    max-height: 100%; /* Ensure image does not overflow vertically */
+    display: block; /* Remove any inline spacing below image */
+}
+
+/* Close button (×) in top-right corner */
+.story-viewer-close {
+    position: absolute; /* Position relative to .story-viewer-content */
+    top: 8px; /* 8px from top */
+    right: 12px; /* 12px from right */
+    background: transparent; /* No background behind the × */
+    border: none; /* Remove default button border */
+    color: #ffffff; /* White color for the × */
+    font-size: 24px; /* Size of the × */
+    cursor: pointer; /* Cursor changes to pointer on hover */
+}
+
+/* Next button to go to the next story */
+.story-viewer-next {
+    position: absolute; /* Positioned relative to .story-viewer-content */
+    right: 12px; /* 12px from right edge */
+    bottom: 10px; /* 10px from bottom edge */
+    padding: 6px 10px; /* Space inside the button */
+    border-radius: 46px; /* Rounded corners for the button */
+    border: 1px solid rgba(209, 61, 206, 0.4); /* Semi-transparent border */
+    background: rgba(249, 22, 196, 0.445); /* Semi-transparent background for button */
+    color: #4a0652; /* White text */
+    cursor: pointer; /* Pointer cursor on hover */
 }
