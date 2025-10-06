@@ -63,6 +63,11 @@
             modal.style.justifyContent = 'center';
             modal.style.alignItems = 'center';
             modal.style.zIndex = '9999';
+            
+            // 🩷 buttery fade transition added
+            modal.style.opacity = '0';
+            modal.style.transition = 'opacity 0.4s ease';
+
             const content = document.createElement('div');
             content.className = 'story-viewer-content';
             //contains the actual story content
@@ -76,6 +81,9 @@
             content.style.display = 'flex';
             content.style.justifyContent = 'center';
             content.style.alignItems = 'center';
+            // 🩷 buttery zoom transition added
+            content.style.transform = 'scale(0.9)';
+            content.style.transition = 'transform 0.4s ease, opacity 0.4s ease';
             //centers the image inside the frame
             const img = document.createElement('img');
             img.className = 'story-viewer-image';
@@ -99,9 +107,19 @@
             closeBtn.style.color = '#000000ff';
             closeBtn.style.fontSize = '24px';
             closeBtn.style.cursor = 'pointer';
-            closeBtn.addEventListener('click', () => { modal.classList.remove('open'); modal.style.display = 'none'; });
+            
+            // 🩷 buttery fade-out + zoom-out animation
+            closeBtn.addEventListener('click', () => { 
+                content.style.transform = 'scale(0.9)';
+                modal.style.opacity = '0';
+                setTimeout(() => {
+                    modal.classList.remove('open'); 
+                    modal.style.display = 'none'; 
+                }, 400); // match transition duration
+            });
+
             //clicking it closes the modal
-            // Next button (CSS overridable)
+            
             const nextBtn = document.createElement('button');
             nextBtn.className = 'story-viewer-next';
             nextBtn.textContent = 'Next';
@@ -138,8 +156,18 @@
         const modal = ensureModal();
         const img = modal.querySelector('.story-viewer-image');
         const nextBtn = modal.querySelector('.story-viewer-next');
+        const content = modal.querySelector('.story-viewer-content');
         modal.classList.add('open');
+        
+        // 🩷 buttery fade-in + zoom-in animation
         modal.style.display = 'flex';
+        modal.style.opacity = '0';
+        content.style.transform = 'scale(0.9)';
+        requestAnimationFrame(() => {
+            modal.style.opacity = '1';
+            content.style.transform = 'scale(1)';
+        });
+
         //fetches the elements inside the modal and makes it visible
         let currentIndex = index;
 
@@ -197,4 +225,4 @@
 
 //i wrote these comments to explain the code better
 // now i think i am going to die
-//i'll complete the dashboard css before i die
+//i'll complete the dashboard css before i die.....................
