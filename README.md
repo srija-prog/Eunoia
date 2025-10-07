@@ -7,7 +7,11 @@ A minimalist social media web app — For people to interact with their friends,
 - 👋 Personalized homepage greeting
 - 🚪 Logout system
 - ⚡ LocalStorage-based session handling
-- the backend has been createad, but is not yet integrated with frontend
+- The backend has been createad, but is not yet integrated with frontend
+- A Story feature has been added for the user only currently.
+- Profile page of user has been created
+- Dashboard page has been created and the user will be redirected to it, after logging in.
+- Both the dashboard and profile pages are fully styled, but they can be modified later.
 
 ### Next Steps
 - Add post creation and user feeds
