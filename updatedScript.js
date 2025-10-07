@@ -1,61 +1,114 @@
 (function() { //starts the iife
-    let myStories = [];
-    //empty array for stories
-    try { myStories = JSON.parse(localStorage.getItem('myStories') || '[]') || []; } catch (_) { myStories = []; }
-    //try to get saved stories from localStorage
-    //if none, use empty array
+    // 1. Correct Data Structure and Scoping
+    let userStories = {
+        'my': [], // This will hold the main user's stories
+        'alice': [],
+        'baby': [],
+        'cat': [],
+        'belle': [],
+        'bunny': [],
+        'ella': [],
+        'jack': [],
+        'olaf': [],
+        'sunny': [],
+        'tess': [],
+        'whiti': []
+    };
+
+    const STORAGE_KEY = 'eunoiaUserStories'; 
+
+    // Try to load all stories from localStorage
+    try { 
+        const stored = JSON.parse(localStorage.getItem(STORAGE_KEY));
+        if(stored && typeof stored === 'object'){
+            userStories = {...userStories, ...stored};
+        }
+    } catch(_){
+        // userSTORIES remains the initial structure
+    }
 
     const myStory = document.querySelector('.story-item.my-story');
-    //find the my story boox
     if (!myStory) return;
-    //if not found stop the code
 
-    const fileInput = myStory.querySelector('input[type="file"]') || document.getElementById('story-upload');
-    //find the hindden file input where the user uploads stories
-    const avatar = myStory.querySelector('.story-avatar img');
-    //find the default avatar image for the story box
+    // We keep the main user's file input reference for later use
+    const myFileInput = document.getElementById('story-upload');
+    
+    // We get the story bar container
     const storiesBar = document.querySelector('.stories-bar');
-    //find the container that holds all the stories
+    
+    // 2. Define Modal Elements in Outer Scope
+    let modal, content, img, nextBtn;
+
 
     function createStoryCircle(imgSrc) {
-        //create one story circle element
+        // create one story circle element
         const newStory = document.createElement('div');
-        //makes a new story div with the previous styles
         newStory.classList.add('story-item', 'user-story');
 
         const avatarDiv = document.createElement('div');
         avatarDiv.classList.add('story-avatar');
-        //creating a container to hold the story image
+        
         const img = document.createElement('img');
         img.src = imgSrc;
         img.alt = 'My Story';
         avatarDiv.appendChild(img);
-        //adds the story into the circle
+        
         const span = document.createElement('span');
         span.textContent = 'My Story';
-        //small label under the circle
+        
         newStory.appendChild(avatarDiv);
         newStory.appendChild(span);
-        //combine the circle and label into one story box
+        
         newStory.addEventListener('click', (e) => {
-            e.preventDefault(); //stop unwanted link behavior
-            e.stopPropagation(); // stop bubbling to parents
-            openStoryModal(myStories.indexOf(imgSrc));
+            e.preventDefault(); 
+            e.stopPropagation(); 
+            const myStoriesArray = userStories['my'] || []; // Get array from data object
+            openStoryModal('my', myStoriesArray.indexOf(imgSrc)); // Correct signature
         });
         return newStory;
-        //returns this complete story
     }
 
-    // Ensure modal exists
+    /**
+     * Handles processing uploaded files and saving them to the correct user.
+     * This is the generalized function for ALL uploads (My Story and Friends).
+     * @param {string} storyKey - The key ('my', 'alice', etc.) to save the stories under.
+     * @param {File[]} files - Array of File objects to upload.
+     */
+    function handleFileUpload(storyKey, files) {
+        if (!files.length) return;
+        let remaining = files.length;
+        
+        files.forEach((file) => {
+            const reader = new FileReader();
+            reader.onload = function(ev) {
+                const imgSrc = ev.target.result;
+                
+                // Ensure the target array exists and is an array
+                if (!Array.isArray(userStories[storyKey])) {
+                    userStories[storyKey] = [];
+                }
+                userStories[storyKey].push(imgSrc); 
+                
+                remaining -= 1;
+                if (remaining === 0) {
+                    // Save the entire object to localStorage after all files are processed
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(userStories));
+                    // Since stories are uploaded, refresh the page to show the story circle border
+                    window.location.reload(); 
+                }
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+
+    // Modal creation logic remains the same (ensureModal and openStoryModal)
     function ensureModal() {
-        let modal = document.querySelector('.story-viewer');
-        //check if modal already exists
+        modal = document.querySelector('.story-viewer');
+        
         if (!modal) {
-            //create the modal if it doesn't exist
             modal = document.createElement('div');
-            //makes the modal container
             modal.className = 'story-viewer';
-            // basic visible backdrop and centering; you can override via CSS
+            // ... (modal styles)
             modal.style.position = 'fixed';
             modal.style.inset = '0';
             modal.style.background = 'rgba(240, 160, 234, 0.84)';
@@ -63,15 +116,12 @@
             modal.style.justifyContent = 'center';
             modal.style.alignItems = 'center';
             modal.style.zIndex = '9999';
-            
-            // 🩷 buttery fade transition added
             modal.style.opacity = '0';
             modal.style.transition = 'opacity 0.4s ease';
 
-            const content = document.createElement('div');
+            content = document.createElement('div');
             content.className = 'story-viewer-content';
-            //contains the actual story content
-            // half window size
+            // ... (content styles)
             content.style.width = '50vw';
             content.style.height = '50vh';
             content.style.backgroundImage = "url('forSmallScreen.jpg')";
@@ -81,50 +131,44 @@
             content.style.display = 'flex';
             content.style.justifyContent = 'center';
             content.style.alignItems = 'center';
-            // 🩷 buttery zoom transition added
             content.style.transform = 'scale(0.9)';
             content.style.transition = 'transform 0.4s ease, opacity 0.4s ease';
-            //centers the image inside the frame
-            const img = document.createElement('img');
+            
+            img = document.createElement('img');
             img.className = 'story-viewer-image';
             img.style.maxWidth = '90%';
             img.style.maxHeight = '90%';
             img.style.borderRadius = '12px';
             img.style.boxShadow = '12px'
-            //here is the actual story image
+            
             const closeBtn = document.createElement('button');
             closeBtn.className = 'story-viewer-close';
             closeBtn.setAttribute('aria-label', 'Close');
             closeBtn.textContent = '×';
-            //the close button
-            // place at top-right of the frame
+            // ... (closeBtn styles)
             closeBtn.style.position = 'absolute';
             closeBtn.style.top = '10px';
             closeBtn.style.right = '10px';
             closeBtn.style.background = 'solid #d614c9ff';
-            closeBtn.style.border = '15px, solid, #d614c9ff';
+            closeBtn.style.border = '15px, solid , #d614c9ff';
             closeBtn.style.borderRadius = '12px';
             closeBtn.style.color = '#000000ff';
             closeBtn.style.fontSize = '24px';
             closeBtn.style.cursor = 'pointer';
             
-            // 🩷 buttery fade-out + zoom-out animation
             closeBtn.addEventListener('click', () => { 
                 content.style.transform = 'scale(0.9)';
                 modal.style.opacity = '0';
                 setTimeout(() => {
                     modal.classList.remove('open'); 
                     modal.style.display = 'none'; 
-                }, 400); // match transition duration
+                }, 400);
             });
-
-            //clicking it closes the modal
             
-            const nextBtn = document.createElement('button');
+            nextBtn = document.createElement('button');
             nextBtn.className = 'story-viewer-next';
             nextBtn.textContent = 'Next';
-            //button to go to next story
-            // place at bottom-right of the frame
+            // ... (nextBtn styles)
             nextBtn.style.position = 'absolute';
             nextBtn.style.bottom = '10px';
             nextBtn.style.right = '12px';
@@ -141,25 +185,25 @@
             content.appendChild(nextBtn);
             modal.appendChild(content);
             document.body.appendChild(modal);
-            //assembbles everything and adds to the page
         }
         return modal;
-        //returns so that the modal can be used
     }
+    
+    ensureModal(); 
 
-    function openStoryModal(index) {
-        //opens the modal and shows the story at the given index
-        if (!myStories.length) return;
-        //no stories, do nothing
-        if (typeof index !== 'number' || index < 0 || index >= myStories.length) index = myStories.length - 1;
-        //if index is invalid, show the latest story
-        const modal = ensureModal();
-        const img = modal.querySelector('.story-viewer-image');
-        const nextBtn = modal.querySelector('.story-viewer-next');
-        const content = modal.querySelector('.story-viewer-content');
-        modal.classList.add('open');
+    function openStoryModal(storyKey, index) { 
+        const currentStories = userStories[storyKey] || [];
         
-        // 🩷 buttery fade-in + zoom-in animation
+        if (!currentStories.length) return; 
+
+        if (typeof index !== 'number' || index < 0 || index >= currentStories.length) index = currentStories.length - 1;
+        
+        let currentIndex = index; 
+        
+        function render() {
+            img.src = currentStories[currentIndex]; 
+        }
+
         modal.style.display = 'flex';
         modal.style.opacity = '0';
         content.style.transform = 'scale(0.9)';
@@ -168,61 +212,86 @@
             content.style.transform = 'scale(1)';
         });
 
-        //fetches the elements inside the modal and makes it visible
-        let currentIndex = index;
-
-        function render() {
-            img.src = myStories[currentIndex];
-            //shows the current story image
-        }
         function goNext() {
-            currentIndex = (currentIndex + 1) % myStories.length;
+            currentIndex = (currentIndex + 1) % currentStories.length; 
             render();
-            //goes to next story, loops back to start
         }
+        
         render();
         img.onclick = goNext;
         if (nextBtn) nextBtn.onclick = goNext;
-        //clicking image or next button goes to next story
     }
 
+
     // Render saved circles on load
-    if (storiesBar && Array.isArray(myStories)) {
-        myStories.forEach((src) => {
+    const myStoriesArray = userStories['my'] || [];
+    if (storiesBar && Array.isArray(myStoriesArray)) {
+        myStoriesArray.forEach((src) => {
             storiesBar.appendChild(createStoryCircle(src));
         });
     }
 
-    // Upload new stories (multiple) -> save all; do not add new circles
-    if (fileInput) {
-        fileInput.addEventListener('change', (e) => {
-            const files = (e.target.files && Array.from(e.target.files)) || [];
-            if (!files.length) return;
-            let remaining = files.length;
-            files.forEach((file) => {
-                const reader = new FileReader();
-                reader.onload = function(ev) {
-                    const imgSrc = ev.target.result;
-                    myStories.push(imgSrc);
-                    remaining -= 1;
-                    if (remaining === 0) {
-                        localStorage.setItem('myStories', JSON.stringify(myStories));
+
+    // ====================================================================
+    // 3. UNIFIED STORY CLICK HANDLER (Upload or View)
+    // This replaces the separate fileInput, avatar, and friendStories blocks.
+    // ====================================================================
+
+    // Select ALL story items (my-story and friend-story)
+    const allStoryItems = storiesBar.querySelectorAll('.story-item');
+    
+    if (allStoryItems.length) { 
+        allStoryItems.forEach(storyItem => {
+            
+            // Get the unique ID key for this story item ('my' or 'alice', 'baby', etc.)
+            const storyKey = storyItem.getAttribute('data-story-id') || (storyItem.classList.contains('my-story') ? 'my' : null);
+            
+            if (!storyKey) return; // Skip if no key can be determined
+
+            const storiesArray = userStories[storyKey] || [];
+            
+            // The click listener is added to the story item box
+            storyItem.addEventListener('click', (e) => {
+                
+                // Determine which file input corresponds to this storyKey
+                // Assumes: 'my' uses 'story-upload', friends use 'friendKey-story-upload'
+                const targetFileInput = (storyKey === 'my') 
+                    ? myFileInput 
+                    : document.getElementById(`${storyKey}-story-upload`);
+
+                // Check if the avatar or upload-related part was clicked
+                if (e.target.closest('.story-avatar') || e.target.classList.contains('upload-icon')) {
+                    e.preventDefault(); 
+                    e.stopPropagation(); 
+                    
+                    if (!storiesArray.length) {
+                        // === CASE 1: NO STORIES PRESENT -> TRIGGER UPLOAD ===
+                        
+                        if (targetFileInput) { 
+                            // Attach a temporary listener to handle the selected files
+                            targetFileInput.onchange = (ev) => {
+                                const files = (ev.target.files && Array.from(ev.target.files)) || [];
+                                if (files.length) {
+                                    // Use the generalized function to save to the correct key!
+                                    handleFileUpload(storyKey, files); 
+                                }
+                                // Clean up the listener after execution
+                                targetFileInput.onchange = null;
+                            };
+                            
+                            // Trigger the click on the hidden file input
+                            targetFileInput.click(); 
+                        } else {
+                            console.log(`Upload input not found for ${storyKey}. Please ensure id="${storyKey}-story-upload" exists in dashboard.html.`);
+                        }
+                        return; // Stop execution after triggering upload
                     }
-                };
-                reader.readAsDataURL(file);
+                    
+                    // === CASE 2: STORIES ARE PRESENT -> OPEN VIEWER ===
+                    openStoryModal(storyKey, storiesArray.length - 1); 
+                }
             });
         });
     }
 
-    // Clicking avatar opens latest story
-    if (avatar) {
-        avatar.addEventListener('click', () => {
-            if (!myStories.length) return;
-            openStoryModal(myStories.length - 1);
-        });
-    }
 })();
-
-//i wrote these comments to explain the code better
-// now i think i am going to die
-//i'll complete the dashboard css before i die.....................
